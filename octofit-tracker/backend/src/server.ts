@@ -8,11 +8,14 @@ const codespaceName = process.env.CODESPACE_NAME;
 const apiBaseUrl = codespaceName
   ? `https://${codespaceName}-8000.app.github.dev`
   : 'http://localhost:8000';
+const frontendOrigin = codespaceName
+  ? `https://${codespaceName}-5173.app.github.dev`
+  : process.env.FRONTEND_URL || 'http://localhost:5173';
 
 app.use(express.json());
 
 app.use((_request, response, next) => {
-  response.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL || 'http://localhost:5173');
+  response.header('Access-Control-Allow-Origin', frontendOrigin);
   response.header('Access-Control-Allow-Headers', 'Content-Type');
   next();
 });

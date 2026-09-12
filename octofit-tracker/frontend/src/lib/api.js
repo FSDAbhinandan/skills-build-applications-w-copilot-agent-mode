@@ -1,4 +1,7 @@
-const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim();
+const configuredCodespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim();
+const browserHost = typeof window !== 'undefined' ? window.location.hostname : '';
+const inferredCodespaceName = browserHost.match(/^(.+)-5173\.app\.github\.dev$/)?.[1];
+const codespaceName = configuredCodespaceName || inferredCodespaceName;
 const apiOrigin = codespaceName
   ? `https://${codespaceName}-8000.app.github.dev`
   : 'http://localhost:8000';
