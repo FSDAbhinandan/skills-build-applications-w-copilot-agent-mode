@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchCollection } from '../lib/api.js';
+import { apiOrigin, getItems } from '../lib/api.js';
 import { ResourceState } from './ResourceState.jsx';
 
 export default function Leaderboard() {
@@ -7,7 +7,7 @@ export default function Leaderboard() {
   const [state, setState] = useState({ loading: true, error: '' });
 
   useEffect(() => {
-    fetchCollection('leaderboard').then(setEntries).catch((error) => setState({ loading: false, error: error.message })).finally(() => setState((current) => ({ ...current, loading: false })));
+    fetch(`${apiOrigin}/api/leaderboard/`).then((response) => { if (!response.ok) throw new Error(`Unable to load leaderboard (${response.status})`); return response.json(); }).then((payload) => setEntries(getItems(payload))).catch((error) => setState({ loading: false, error: error.message })).finally(() => setState((current) => ({ ...current, loading: false })));
   }, []);
 
   return <section className="page-section">

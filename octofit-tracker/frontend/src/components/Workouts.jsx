@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchCollection } from '../lib/api.js';
+import { apiOrigin, getItems } from '../lib/api.js';
 import { ResourceState } from './ResourceState.jsx';
 
 export default function Workouts() {
@@ -7,7 +7,7 @@ export default function Workouts() {
   const [state, setState] = useState({ loading: true, error: '' });
 
   useEffect(() => {
-    fetchCollection('workouts').then(setWorkouts).catch((error) => setState({ loading: false, error: error.message })).finally(() => setState((current) => ({ ...current, loading: false })));
+    fetch(`${apiOrigin}/api/workouts/`).then((response) => { if (!response.ok) throw new Error(`Unable to load workouts (${response.status})`); return response.json(); }).then((payload) => setWorkouts(getItems(payload))).catch((error) => setState({ loading: false, error: error.message })).finally(() => setState((current) => ({ ...current, loading: false })));
   }, []);
 
   return <section className="page-section"><div className="section-heading"><div><p className="eyebrow">Suggested for you</p><h1>Workouts</h1></div><span className="section-count">{workouts.length} plans</span></div>

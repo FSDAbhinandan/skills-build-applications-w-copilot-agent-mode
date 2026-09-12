@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchCollection } from '../lib/api.js';
+import { apiOrigin, getItems } from '../lib/api.js';
 import { ResourceState } from './ResourceState.jsx';
 
 export default function Users() {
@@ -7,7 +7,7 @@ export default function Users() {
   const [state, setState] = useState({ loading: true, error: '' });
 
   useEffect(() => {
-    fetchCollection('users').then(setUsers).catch((error) => setState({ loading: false, error: error.message })).finally(() => setState((current) => ({ ...current, loading: false })));
+    fetch(`${apiOrigin}/api/users/`).then((response) => { if (!response.ok) throw new Error(`Unable to load users (${response.status})`); return response.json(); }).then((payload) => setUsers(getItems(payload))).catch((error) => setState({ loading: false, error: error.message })).finally(() => setState((current) => ({ ...current, loading: false })));
   }, []);
 
   return <section className="page-section"><div className="section-heading"><div><p className="eyebrow">Your crew</p><h1>Members</h1></div><span className="section-count">{users.length} active</span></div>

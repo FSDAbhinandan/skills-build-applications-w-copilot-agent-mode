@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchCollection } from '../lib/api.js';
+import { apiOrigin, getItems } from '../lib/api.js';
 import { ResourceState } from './ResourceState.jsx';
 
 export default function Activities() {
@@ -7,7 +7,12 @@ export default function Activities() {
   const [state, setState] = useState({ loading: true, error: '' });
 
   useEffect(() => {
-    fetchCollection('activities')
+    fetch(`${apiOrigin}/api/activities/`)
+      .then((response) => {
+        if (!response.ok) throw new Error(`Unable to load activities (${response.status})`);
+        return response.json();
+      })
+      .then((payload) => getItems(payload))
       .then((items) => setActivities(items))
       .catch((error) => setState({ loading: false, error: error.message }))
       .finally(() => setState((current) => ({ ...current, loading: false })));

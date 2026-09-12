@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchCollection } from '../lib/api.js';
+import { apiOrigin, getItems } from '../lib/api.js';
 import { ResourceState } from './ResourceState.jsx';
 
 export default function Teams() {
@@ -7,7 +7,7 @@ export default function Teams() {
   const [state, setState] = useState({ loading: true, error: '' });
 
   useEffect(() => {
-    fetchCollection('teams').then(setTeams).catch((error) => setState({ loading: false, error: error.message })).finally(() => setState((current) => ({ ...current, loading: false })));
+    fetch(`${apiOrigin}/api/teams/`).then((response) => { if (!response.ok) throw new Error(`Unable to load teams (${response.status})`); return response.json(); }).then((payload) => setTeams(getItems(payload))).catch((error) => setState({ loading: false, error: error.message })).finally(() => setState((current) => ({ ...current, loading: false })));
   }, []);
 
   return <section className="page-section"><div className="section-heading"><div><p className="eyebrow">Find your people</p><h1>Teams</h1></div><span className="section-count">{teams.length} teams</span></div>
